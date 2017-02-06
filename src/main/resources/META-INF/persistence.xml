@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
+
+
+    <persistence-unit name="dev" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <class>fr.istic.crm.domain.Tuteur</class>
+        <class>fr.istic.crm.domain.ConventionStage</class>
+        <class>fr.istic.crm.domain.Diplome</class>
+        <class>fr.istic.crm.domain.Etudiant</class>
+        <class>fr.istic.crm.domain.Filiere</class>
+        <class>fr.istic.crm.domain.Groupe</class>
+        <class>fr.istic.crm.domain.Site</class>
+        <class>fr.istic.crm.domain.Taxe</class>
+        <class>fr.istic.crm.domain.Entreprise</class>
+        <class>fr.istic.crm.domain.Partenariat</class>
+        <class>fr.istic.crm.domain.Professionnel</class>
+        <class>fr.istic.crm.domain.Promotion</class>
+        <class>fr.istic.crm.domain.User</class>
+        <class>fr.istic.crm.domain.Authority</class>
+        <class>fr.istic.crm.domain.AbstractAuditingEntity</class>
+        <class>fr.istic.crm.domain.PersistentToken</class>
+        <class>fr.istic.crm.domain.PersistentAuditEvent</class>
+
+        <properties>
+            <property name="hibernate.archive.autodetection" value="class, hbm"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <!--<property name="hibernate.hbm2ddl.auto" value="create" />-->
+            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
+            <property name="hibernate.connection.username" value="istic" />
+            <property name="hibernate.connection.password" value="istic123" />
+            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/crmistic" />
+            <property name="hibernate.show_sql" value="true" />
+
+            <property name="hibernate.cache.use_second_level_cache" value="true"/>
+                <property name="hibernate.cache.use_query_cache" value="false"/>
+            <property name="hibernate.generate_statistics" value="true"/>
+
+            <property name="hibernate.id.new_generator_mappings" value="false"/>
+
+            <property name="hibernate.javax.cache.provider" value="org.ehcache.jsr107.EhcacheCachingProvider"/>
+            <property name="hibernate.javax.cache.uri" value="ehcache.xml"/>
+            <property name="hibernate.cache.region.factory_class" value="fr.istic.crm.config.jcache.SpringCacheRegionFactory"/>
+
+        </properties>
+    </persistence-unit>
+
+
+</persistence>
