@@ -39,17 +39,29 @@ public class ImportCSV {
      * @return le chemin complet du fichier à traiter
      */
     public static File getFile(String cheminFichier){
+
         return  new File(cheminFichier);
     }
-    public static void lectureFichier(File file){
-        Tuteur tuteur = new Tuteur();
+    public static void lectureFichier(File fichier){
+
+        fichier = getFile("csv/Tuteurs.csv");
+
+
         try{
-            InputStream ips=new FileInputStream(file);
+            InputStream ips=new FileInputStream(fichier);
             InputStreamReader ipsr=new InputStreamReader(ips);
             BufferedReader br=new BufferedReader(ipsr);
             String ligne;
             while ((ligne=br.readLine())!=null){
                 System.out.println(ligne);
+                String[] parts = ligne.split(";");
+                Tuteur tuteur = new Tuteur();
+
+                tuteur.setNom(parts[1]);
+                tuteur.setPrenom(parts[2]);
+                tuteur.setTelephone(parts[3]);
+                tuteur.setMail(parts[4]);
+                EntityManagerHelper.getEntityManager().persist(tuteur);
             }
             br.close();
         }
@@ -80,28 +92,28 @@ public class ImportCSV {
             }
             EntityManagerHelper.beginTransaction();
 
-            try {
-                test.fillBase();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            try {
+//                test.fillBase();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
 
             EntityManagerHelper.commit();
             EntityManagerHelper.closeEntityManager();
             EntityManagerHelper.closeEntityManagerFactory();
 
         }
+
     }
-
-    private void fillBase() {
-        Tuteur tuteur = new Tuteur();
-        tuteur.setNom("Foursov");
-        tuteur.setPrenom("Micka");
-        tuteur.setTelephone("0606060606");
-        tuteur.setMail("micka.foufour@irisa.fr");
-
-        EntityManagerHelper.getEntityManager().persist(tuteur);
-    }
-
+//
+//  private void fillBase() {-
+//        Tuteur tuteur = new Tuteur();
+//        tuteur.setNom("Foursov");
+//        tuteur.setPrenom("Micka");
+//        tuteur.setTelephone("0606060606");
+//        tuteur.setMail("micka.foufour@irisa.fr");
+//
+//        EntityManagerHelper.getEntityManager().persist(tuteur);
+//    }
 
 }
