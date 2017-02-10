@@ -1,119 +1,109 @@
-package jpa; /**
+package jpa;
+
+/**
  * Created by diawara on 26/01/17.
  */
 
-/*import fr.istic.crm.domain.Tuteur;
-import fr.istic.crm.service.dto.TuteurDTO;
-import fr.istic.crm.service.impl.TuteurServiceImpl;
-import org.junit.jupiter.api.Test;*/
-
-import fr.istic.crm.domain.Diplome;
+import fr.istic.crm.domain.Etudiant;
 import fr.istic.crm.domain.Tuteur;
+import fr.istic.crm.domain.enumeration.Sexe;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class ImportCSV {
 
-    public ImportCSV(){
+    public static final String PERSISTENCE_NAME = "dev"; // profiles available : dev or prod
+
+    private static final String TUTEUR = "Tuteur";
+    private static final String ETUDIANT = "Etudiant";
+
+    private static final String CSV_DELIMITER = ";";
+    private static final String CSV_DIRECTORY = "csv/";
+    private static final String CSV_EXT = ".csv";
+    private static final boolean SKIP_HEADERS = true;
+
+
+    public static void main (String args[]){
+        ImportCSV app = new ImportCSV();
+
+        EntityManagerHelper.beginTransaction();
+
+        app.readDirectory(CSV_DIRECTORY);
+
+        EntityManagerHelper.commit();
+        EntityManagerHelper.closeEntityManager();
+        EntityManagerHelper.closeEntityManagerFactory();
 
     }
-    /**
-     *@param file
-     * @return Vrai si le fichier existe
-     */
-    public static boolean existFile(File file){
-        return file.exists();
+
+    private void readDirectory(String directory) {
+        Path csvDirectory = Paths.get(directory);
+
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(csvDirectory, "*" + CSV_EXT)) {
+            for (Path file : stream) {
+                File csvFile = new File(file.toString());
+                lectureFichier(csvFile);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
-    /**
-     * @param file
-     * @return Vrai si le fichier que tu veux traiter est un fichier simple ou un dossier(isDirectory())
-     */
-    public static boolean typeFichier(File file){
-        return file.isFile();
-    }
-    /**
-     * @return le chemin complet du fichier à traiter
-     */
-    public static File getFile(String cheminFichier){
 
-        return  new File(cheminFichier);
-    }
-    public static void lectureFichier(File fichier){
+    private void lectureFichier(File fichier) {
 
-        fichier = getFile("csv/Tuteurs.csv");
+        try (BufferedReader br = new BufferedReader(new FileReader(fichier))) {
+            String ligne = "";
 
+            if (SKIP_HEADERS) ligne = br.readLine();
 
-        try{
-            InputStream ips=new FileInputStream(fichier);
-            InputStreamReader ipsr=new InputStreamReader(ips);
-            BufferedReader br=new BufferedReader(ipsr);
-            String ligne;
             while ((ligne=br.readLine())!=null){
-                System.out.println(ligne);
-                String[] parts = ligne.split(";");
-                Tuteur tuteur = new Tuteur();
+                String[] field = ligne.split(CSV_DELIMITER);
 
-                tuteur.setNom(parts[1]);
-                tuteur.setPrenom(parts[2]);
-                tuteur.setTelephone(parts[3]);
-                tuteur.setMail(parts[4]);
-                EntityManagerHelper.getEntityManager().persist(tuteur);
+                persistEntity(fichier, field);
+
             }
             br.close();
         }
         catch (Exception e){
-            System.out.println(e.toString());
-        }
-    }
-
-    public static void main (String args[]){
-        ImportCSV test = new ImportCSV();
-
-        //  Fichier monfichier = new Fichier();
-        //Je recupère mon fichier
-        File fichier = getFile("/home/diawara/Documents/Tuteurs.csv");
-        //Je teste si ce fichier donné en param existe bel et bien
-        if(!existFile(fichier)){
-            System.out.println("Le fichier "+ fichier.getName() + "n'exite pas !");
-            System.exit(0);
-        }else{//Au cas ou le chemin que j'ai donné pointe juste sur un répertoire
-            if(!fichier.isFile() || fichier.isDirectory()){
-                System.out.println("Le fichier "+ fichier.getName() + " est +tôt un répertoire !");
-                System.exit(0);
-            }else{
-                System.out.println("Chemin fichier : " + fichier.getAbsolutePath());
-                System.out.println("Nom du fichier à traiter: " + fichier.getName());
-                System.out.println("----------------- ");
-                lectureFichier(fichier);
-            }
-            EntityManagerHelper.beginTransaction();
-
-//            try {
-//                test.fillBase();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-
-            EntityManagerHelper.commit();
-            EntityManagerHelper.closeEntityManager();
-            EntityManagerHelper.closeEntityManagerFactory();
-
+            e.printStackTrace();
         }
 
     }
-//
-//  private void fillBase() {-
-//        Tuteur tuteur = new Tuteur();
-//        tuteur.setNom("Foursov");
-//        tuteur.setPrenom("Micka");
-//        tuteur.setTelephone("0606060606");
-//        tuteur.setMail("micka.foufour@irisa.fr");
-//
-//        EntityManagerHelper.getEntityManager().persist(tuteur);
-//    }
+
+    private void persistEntity(File fichier, String[] field) {
+        if (fichier.getName().startsWith(TUTEUR)) {
+            Tuteur tuteur = new Tuteur()
+                    .nom(field[0])
+                    .prenom(field[1])
+                    .telephone(field[2])
+                    .mail(field[3]);
+
+            EntityManagerHelper.getEntityManager().persist(tuteur);
+        }
+        else if (fichier.getName().startsWith(ETUDIANT)) {
+            Etudiant etudiant = new Etudiant()
+                    .nom(field[0])
+                    .prenom(field[1])
+                    .mail(field[2])
+                    .sexe(getSexe(field[3]))
+                    .numEtudiant(field[4]);
+
+            EntityManagerHelper.getEntityManager().persist(etudiant);
+
+        }
+    }
+
+    private Sexe getSexe(String sexeInCsv) {
+
+        return sexeInCsv.equals("FEMME") ? Sexe.FEMME : Sexe.HOMME;
+    }
 
 }
