@@ -5,6 +5,7 @@ package jpa;
  */
 
 import fr.istic.crm.domain.Etudiant;
+import fr.istic.crm.domain.Filiere;
 import fr.istic.crm.domain.Tuteur;
 import fr.istic.crm.domain.enumeration.Sexe;
 
@@ -23,6 +24,7 @@ public class ImportCSV {
 
     private static final String TUTEUR = "Tuteur";
     private static final String ETUDIANT = "Etudiant";
+    private static final String FILIERE = "Filiere";
 
     private static final String CSV_DELIMITER = ";";
     private static final String CSV_DIRECTORY = "csv/";
@@ -97,6 +99,13 @@ public class ImportCSV {
                     .numEtudiant(field[4]);
 
             EntityManagerHelper.getEntityManager().persist(etudiant);
+
+        }
+        else if (fichier.getName().startsWith(FILIERE)) {
+            Filiere filiere = new Filiere()
+                    .niveau(field[0]);
+
+            EntityManagerHelper.getEntityManager().persist(filiere);
 
         }
     }
