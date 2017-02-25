@@ -27,8 +27,11 @@
 
         <properties>
             <property name="hibernate.archive.autodetection" value="class, hbm"/>
+            <property name="org.hibernate.envers.audit_table_suffix" value="_aud"/>
+            <property name="org.hibernate.envers.revision_field_name" value="rev"/>
+            <property name="org.hibernate.envers.revision_type_field_name" value="revtype"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
-            <!--<property name="hibernate.hbm2ddl.auto" value="create" />-->
+            <!--<property name="hibernate.hbm2ddl.auto" value="update" />-->
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
             <property name="hibernate.connection.username" value="istic" />
             <property name="hibernate.connection.password" value="istic123" />

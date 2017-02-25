@@ -32,6 +32,11 @@ public class ImportCSV {
     private static final String TAXE = "Taxe";
     private static final String PARTENARIAT = "Partenariat";
     private static final String CONVENTION_STAGE = "ConventionStage";
+    private static final String DIPLOME = "Diplome";
+    private static final String GROUPE = "Groupe";
+    private static final String PROFESSIONNEL = "Professionnel";
+    private static final String ENTREPRISE = "Entreprise";
+    private static final String SITE = "Site";
 
     private static final String CSV_DELIMITER = ";";
     private static final String CSV_DIRECTORY = "csv/";
@@ -140,6 +145,83 @@ public class ImportCSV {
             EntityManagerHelper.getEntityManager().persist(partenariat);
 
         }
+        else if (fichier.getName().startsWith(DIPLOME)) {
+            Diplome diplome = new Diplome()
+                    .nom(field[0])
+                    .dateCreation(convertDateToLong())
+                    .dateModification(convertDateToLong());
+
+            EntityManagerHelper.getEntityManager().persist(diplome);
+
+        }
+        else if (fichier.getName().startsWith(GROUPE)) {
+            Groupe groupe = new Groupe()
+                    .nom(field[0])
+                    .dateCreation(convertDateToLong())
+                    .dateModification(convertDateToLong());
+
+            EntityManagerHelper.getEntityManager().persist(groupe);
+
+        }
+
+        else if (fichier.getName().startsWith(ENTREPRISE)) {
+            Entreprise entreprise = new Entreprise()
+                    .nom(field[0])
+                    .pays(field[1])
+                    .numSiret(field[2])
+                    .numSiren(field[3])
+                    .telephone(field[4])
+                    .dateCreation(convertDateToLong())
+                    .dateModification(convertDateToLong());
+
+            EntityManagerHelper.getEntityManager().persist(entreprise);
+
+        }
+//        else if (fichier.getName().startsWith(PROFESSIONNEL)) {
+//            Professionnel professionnel = new Professionnel()
+//                    .nom(field[0])
+//                    .prenom(field[1])
+//                    .telephone(field[2])
+//                    .mail(field[3])
+//                    .fonction(field[4])
+//                    .ancienEtudiant(Boolean.valueOf(field[5]))
+//                    .dateCreation(convertDateToLong())
+//                    .dateModification(convertDateToLong());
+//
+//            EntityManagerHelper.getEntityManager().persist(professionnel);
+//
+//        }
+//        else if (fichier.getName().startsWith(SITE)) {
+//
+//            Site site = new Site()
+//                    .adresse(field[0])
+//                    .codePostal(field[1])
+//                    .ville(field[2])
+//                    .pays(field[3])
+//                    .telephone(field[4])
+//                    .dateCreation(convertDateToLong())
+//                    .dateModification(convertDateToLong());
+//
+//            EntityManagerHelper.getEntityManager().persist(site);
+//
+//        }
+//        else if (fichier.getName().startsWith(CONVENTION_STAGE)) {
+//
+//            ConventionStage conventionStage = new ConventionStage()
+//                    .sujet(field[0])
+//                    .fonctions(field[1])
+//                    .competences(field[2])
+//                    .dateDebut(getZonedDateTime(field[3], DATE_FORMAT))
+//                    .dateDebut(getZonedDateTime(field[4], DATE_FORMAT));
+//
+//            EntityManagerHelper.getEntityManager().persist(conventionStage);
+//
+//        }
+    }
+
+    private long convertDateToLong() {
+        Date date = new Date();
+        return (date.getTime());
     }
 
     private Sexe getSexe(String sexeInCsv) {
