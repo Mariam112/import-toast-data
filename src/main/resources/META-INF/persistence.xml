@@ -33,7 +33,7 @@
             <property name="hibernate.connection.username" value="istic" />
             <property name="hibernate.connection.password" value="istic123" />
             <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/crmistic" />
-            <property name="hibernate.show_sql" value="false" />
+            <property name="hibernate.show_sql" value="true" />
 
             <property name="hibernate.cache.use_second_level_cache" value="true"/>
                 <property name="hibernate.cache.use_query_cache" value="false"/>
