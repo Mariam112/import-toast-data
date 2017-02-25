@@ -4,9 +4,7 @@ package jpa;
  * Created by diawara on 26/01/17.
  */
 
-import fr.istic.crm.domain.Etudiant;
-import fr.istic.crm.domain.Filiere;
-import fr.istic.crm.domain.Tuteur;
+import fr.istic.crm.domain.*;
 import fr.istic.crm.domain.enumeration.Sexe;
 
 import java.io.BufferedReader;
@@ -17,6 +15,11 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
 
 public class ImportCSV {
 
@@ -25,12 +28,18 @@ public class ImportCSV {
     private static final String TUTEUR = "Tuteur";
     private static final String ETUDIANT = "Etudiant";
     private static final String FILIERE = "Filiere";
+    private static final String PROMOTION = "Promotion";
+    private static final String TAXE = "Taxe";
+    private static final String PARTENARIAT = "Partenariat";
+    private static final String CONVENTION_STAGE = "ConventionStage";
 
     private static final String CSV_DELIMITER = ";";
     private static final String CSV_DIRECTORY = "csv/";
     private static final String CSV_EXT = ".csv";
     private static final boolean SKIP_HEADERS = true;
 
+    private static final String YEAR_FORMAT = "yyyy";
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
 
     public static void main (String args[]){
         ImportCSV app = new ImportCSV();
@@ -108,11 +117,51 @@ public class ImportCSV {
             EntityManagerHelper.getEntityManager().persist(filiere);
 
         }
+        else if (fichier.getName().startsWith(PROMOTION)) {
+            Promotion promotion = new Promotion()
+                    .annee(getZonedDateTime(field[0], YEAR_FORMAT));
+
+            EntityManagerHelper.getEntityManager().persist(promotion);
+
+        }
+        else if (fichier.getName().startsWith(TAXE)) {
+            Taxe taxe = new Taxe()
+                    .montant(Double.valueOf(field[0]))
+                    .annee(getZonedDateTime(field[1], YEAR_FORMAT));
+
+            EntityManagerHelper.getEntityManager().persist(taxe);
+
+        }
+        else if (fichier.getName().startsWith(PARTENARIAT)) {
+            Partenariat partenariat= new Partenariat()
+                    .dateDebut(getZonedDateTime(field[0], DATE_FORMAT))
+                    .dateFin(getZonedDateTime(field[1], DATE_FORMAT));
+
+            EntityManagerHelper.getEntityManager().persist(partenariat);
+
+        }
     }
 
     private Sexe getSexe(String sexeInCsv) {
 
         return sexeInCsv.equals("FEMME") ? Sexe.FEMME : Sexe.HOMME;
+    }
+
+    private ZonedDateTime getZonedDateTime(String dateInCsv, String format) {
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+
+        Date date = null;
+        ZonedDateTime zonedDateTime = null;
+
+        try {
+            date = formatter.parse(dateInCsv);
+            zonedDateTime = date.toInstant().atZone(ZoneId.systemDefault());
+        } catch (ParseException e) {
+            e.printStackTrace();
+
+        }
+
+        return zonedDateTime;
     }
 
 }
