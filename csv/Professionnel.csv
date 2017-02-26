@@ -1,0 +1,4 @@
+nom;prenom;telephone;mail;fonction;ancienEtudiant
+Routier;Ludovic;0202020202;ludovic.routier@domain.com;Consultant ERP;false
+Lamarque;Matthieu;0606060606;matthieu.lamarque@domain.com;CEO;true
+Guyon;Paul-Antoine;0606060606;paul-autoine.guyon@domail.com;Développeur Symfony;false
