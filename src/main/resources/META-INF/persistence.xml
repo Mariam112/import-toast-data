@@ -76,7 +76,7 @@
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
             <property name="hibernate.connection.username" value="istic" />
             <property name="hibernate.connection.password" value="istic123456" />
-            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/crmistic" />
+            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/crmistic?useSSL=false" />
             <property name="hibernate.show_sql" value="false" />
 
             <property name="hibernate.cache.use_second_level_cache" value="true"/>
